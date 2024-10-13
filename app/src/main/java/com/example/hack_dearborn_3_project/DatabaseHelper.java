@@ -2,6 +2,7 @@ package com.example.hack_dearborn_3_project;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public DatabaseHelper(Context context)
     {
-        super(context,DATABASE_NAME , null, 1);
+        super(context,DATABASE_NAME , null, 2);
     }
 
     @Override
@@ -93,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
             //movie insert statements
             db.execSQL("INSERT INTO " + GOAL_TABLE_NAME + "(title, goalNum, date) VALUES('Default Goal','2000','4/12/2025');");
+            db.execSQL("INSERT INTO " + GOAL_TABLE_NAME + "(title, goalNum, date) VALUES('Paris Vacation','3000','5/16/2026');");
 
             db.close();
 
@@ -213,6 +215,46 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         db.close();
         return listUsers;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Goals> getAllGoals()
+    {
+        System.out.println("Beginning of getAllGoals()");
+        ArrayList<Goals> listOfGoals = new ArrayList<Goals>();
+
+        //query to get all rows and attributes from our table
+        //select * means get all attributes
+        String selectQuery = "SELECT * FROM " + GOAL_TABLE_NAME + " ORDER BY goalId;";
+
+        //get an instance of a readable database and store it in db
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //execute the query. Cursor will be used to cycle through the results
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int goalId;
+        String title;
+        int goalNum;
+        String date;
+
+        //if there was something returned move the cursor to the beginning of the list
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                goalId=cursor.getInt(cursor.getColumnIndex("goalId"));
+                title = cursor.getString(cursor.getColumnIndex("title"));
+                goalNum=cursor.getInt(cursor.getColumnIndex("goalNum"));
+                date = cursor.getString(cursor.getColumnIndex("date"));
+
+                //add the returned results to my list
+                listOfGoals.add(new Goals(goalId, title, goalNum, date));
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+        return listOfGoals;
     }
 
     //USER CRUD====================================================================================
