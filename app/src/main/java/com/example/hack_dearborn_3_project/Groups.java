@@ -9,17 +9,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class Groups extends AppCompatActivity {
+
     DatabaseHelper dbHelper;
 
-    Intent loginIntent;
-    Intent signUpIntent;
+    Intent homePageIntent;
+    Intent groupPageIntent;
+    Intent newGroupIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_groups);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -27,16 +29,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        homePageIntent=new Intent(Groups.this, Homepage.class);
+        groupPageIntent=new Intent(Groups.this, GroupPage.class);
+        newGroupIntent=new Intent(Groups.this, NewGroup.class);
 
-
-        loginIntent=new Intent(MainActivity.this, Login.class);
-        signUpIntent=new Intent(MainActivity.this, SignUp.class);
-
-        //Initialize DatabaseHelper
-        dbHelper = new DatabaseHelper(this);
-        //call the initializeDB() function to fill the records into our table
-        dbHelper.initializeDB();
-
-
+        dbHelper=new DatabaseHelper(this);
     }
 }
